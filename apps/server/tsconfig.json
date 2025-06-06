@@ -4,7 +4,6 @@
   "include": ["src/**/*.ts"],
   "compilerOptions": {
     "lib": ["ES2015"],
-    "rootDir": "./src",
     "outDir": "./dist",
     "baseUrl": ".",
     "esModuleInterop": true,
