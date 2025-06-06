@@ -41,7 +41,7 @@ services:
 
   postgres:
     image: postgres:latest
-    container_name: fasoshop
+    container_name: rmrbac
     environment:
       POSTGRES_USER: opensource
       POSTGRES_PASSWORD: sourceopen

@@ -35,6 +35,9 @@ app.post(
           name: name,
           email: email,
           password: password,
+          role: {
+            connect: { name: "user" },
+          },
         },
       });
 

@@ -3,15 +3,19 @@
   "version": "1.0.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
+  "prisma": {
+    "schema": "prisma/schema.prisma",
+    "seed": "tsx src/seed.ts"
+  },
   "scripts": {
     "db:generate": "dotenv -e ./../../.env -- pnpx prisma generate --schema=./prisma/schema.prisma",
     "db:migrate": "dotenv -e ./../../.env -- pnpx prisma migrate dev --schema=./prisma/schema.prisma",
     "db:deploy": "dotenv -e ./../../.env -- pnpx prisma migrate deploy --schema=./prisma/schema.prisma",
     "db:push": "dotenv -e ./../../.env -- pnpx prisma db push --schema=./prisma/schema.prisma --skip-generate --accept-data-loss",
     "db:studio": "dotenv -e ./../../.env -- pnpx prisma studio --schema=./prisma/schema.prisma",
+    "db:seed": "dotenv -e ./../../.env -- pnpx prisma db seed",
     "format": "pnpx prisma format",
-    "dev": "pnpm db:generate && pnpm db:push && pnpm db:migrate",
-    "start": "pnpm db:generate && pnpm db:push && pnpm db:deploy"
+    "start": "pnpm db:generate && pnpm db:push && pnpm db:migrate && pnpm db:deploy"
   },
   "dependencies": {
     "@prisma/client": "^6.8.1",
@@ -20,7 +24,8 @@
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^22.15.18",
-    "prisma": "^6.8.1"
+    "prisma": "^6.8.1",
+    "tsx": "^4.19.4"
   },
   "exports": {
     ".": "./src/index.ts"

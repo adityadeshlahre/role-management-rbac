@@ -11,7 +11,7 @@
       "dependsOn": ["^lint"]
     },
     "dev": {
-      "dependsOn": ["^db:generate"],
+      "dependsOn": ["^db:generate", "^db:seed"],
       "cache": false,
       "persistent": true,
       "outputs": []
@@ -21,6 +21,11 @@
     },
     "db:push": {
       "cache": true
+    },
+    "db:seed": {
+      "dependsOn": ["^db:generate"],
+      "cache": false,
+      "outputs": []
     }
   }
 }

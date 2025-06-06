@@ -1,11 +1,16 @@
 {
   "name": "quick-start",
   "private": true,
+  "prisma": {
+    "schema": "packages/db/prisma/schema.prisma",
+    "seed": "tsx packages/db/src/seed.ts"
+  },
   "scripts": {
     "build": "turbo build",
     "dev:web": "turbo run dev --filter=web",
     "dev:server": "turbo run dev --filter=server",
     "dev": "turbo run dev",
+    "db:seed": "turbo run db:seed",
     "dev:docker": "docker compose -f dev.docker-compose.yml up -d",
     "dev:docker:build": "docker compose -f dev.docker-compose.yml build",
     "docker:build": "docker-compose -f docker-compose.yml build && docker compose -f dev.docker-compose.yml build",
@@ -31,6 +36,7 @@
     "prettier": "^3.5.3",
     "rimraf": "^6.0.1",
     "tailwindcss": "^4.1.7",
+    "tsx": "^4.19.4",
     "turbo": "^2.5.3",
     "typescript": "^5.8.3"
   },
