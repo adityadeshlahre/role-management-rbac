@@ -23,7 +23,7 @@
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
     "esbuild": "^0.25.4",
-    "eslint": "^9.27.0",
+    "eslint": "^9.28.0",
     "express": "^5.1.0",
     "globals": "^16.1.0",
     "ts-node": "^10.9.2",
