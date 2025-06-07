@@ -1,9 +1,6 @@
 /* eslint-disable */
 import { prisma } from "./prisma";
-import {
-  hashedPassword,
-  issueToken,
-} from "./../../../apps/server/src/lib/utils";
+import { hashedPassword, issueToken } from "@repo/common/src/";
 
 const DEFAULT_ROLES = [
   { name: "ADMIN", description: "Administrator role", isDefault: false },

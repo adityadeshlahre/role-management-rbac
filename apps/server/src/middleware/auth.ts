@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { prisma } from "@repo/db";
-import { verifyToken } from "./../lib/utils";
+import { verifyToken } from "@repo/common/src";
 import { Permission, Role, User } from "@repo/types/index";
 
 declare global {

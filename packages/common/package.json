@@ -1,13 +1,17 @@
 {
   "name": "@repo/common",
   "version": "1.0.0",
-  "exports": {
-    "./types": "./src/types.ts"
-  },
+  "main": "./index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*"
+    "@repo/typescript-config": "workspace:*",
+    "@types/jsonwebtoken": "^9.0.9"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "dotenv": "^16.5.0",
+    "jsonwebtoken": "^9.0.2"
   }
 }

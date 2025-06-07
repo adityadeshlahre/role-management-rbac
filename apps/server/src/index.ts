@@ -6,7 +6,11 @@ import { prisma } from "@repo/db";
 import dotenv from "dotenv";
 import { authenticate } from "./middleware/auth";
 import { authorizeRoles, authorizePermissions } from "./middleware/authorize";
-import { comparePassword, hashedPassword, issueToken } from "./lib/utils";
+import {
+  comparePassword,
+  hashedPassword,
+  issueToken,
+} from "../../../packages/common/src/lib/utils";
 
 const app = express();
 const port = process.env.PORT || 3000;
