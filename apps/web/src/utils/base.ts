@@ -1,2 +1,2 @@
 export const SERVER_URL: string =
-  import.meta.env.SERVER_URL || "https://quick-start-server.onrender.com";
+  import.meta.env.SERVER_URL || "https://localhost:3000";

@@ -1,60 +1,103 @@
-import { User, UserSchema } from "@repo/types/";
-import axios from "axios";
-import { useState } from "react";
-import { SERVER_URL } from "../utils/base";
+import { Login, LoginSchema } from "@repo/types/";
+import { useEffect, useState } from "react";
+import { useAuthContext } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Form = () => {
-  const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const { loginUser, isLoading, isAuthenticated, authChecked } =
+    useAuthContext();
+  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const result = UserSchema.safeParse({ name, email, password });
+    const result = LoginSchema.safeParse({ email, password });
 
     if (!result.success) {
       console.error(result.error.errors);
       return;
     }
 
-    const user: User = result.data;
+    const user: Login = result.data;
 
-    axios
-      .post(`${SERVER_URL}/user`, {
-        name: user.name,
-        email: user.email,
-        password: user.password,
-      })
-      .then(() => {
-        console.log(user);
-      });
+    loginUser(user.email, user.password);
   };
 
+  useEffect(() => {
+    if (authChecked && isAuthenticated) {
+      const timer = setTimeout(() => {
+        navigate("/");
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [authChecked, isAuthenticated, navigate]);
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+        Loading...
+      </div>
+    );
+  }
+
+  if (!authChecked || (authChecked && isAuthenticated)) {
+    return (
+      <>
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+          <div>Checking authentication...</div>
+        </div>
+      </>
+    );
+  }
+
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        className="border-2 border-neutral-900"
-        type="text"
-        value={name}
-        placeholder="name"
-        onChange={(e) => setName(e.target.value)}
-      />
-      <input
-        className="border-2 border-neutral-900"
-        type="email"
-        value={email}
-        placeholder="email"
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        className="border-2 border-neutral-900"
-        type="password"
-        value={password}
-        placeholder="password"
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button type="submit">Submit</button>
-    </form>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <div className="flex-1 flex flex-col items-center justify-center">
+        {isAuthenticated ? (
+          <div className="text-green-700 mb-4">
+            Welcome back! Redirecting...
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit}>
+            <div className="flex flex-col items-center gap-4">
+              <div className="text-md text-center">
+                <div>
+                  <code>
+                    ADMIN | Email : tim@apple.com & Password : password
+                  </code>
+                </div>
+                <div>
+                  <code>
+                    TEACHER | Email : jin@apple.com & Password : password
+                  </code>
+                </div>
+                <div>
+                  <code>
+                    STUDENT | Email : psh@apple.com & Password : password
+                  </code>
+                </div>
+              </div>
+              <input
+                className="border-2 border-neutral-900"
+                type="email"
+                value={email}
+                placeholder="email"
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <input
+                className="border-2 border-neutral-900"
+                type="password"
+                value={password}
+                placeholder="password"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <button type="submit">Submit</button>
+            </div>
+          </form>
+        )}
+      </div>
+    </div>
   );
 };
 

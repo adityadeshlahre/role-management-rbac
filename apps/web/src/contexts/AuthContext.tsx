@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { User } from "@repo/types";
 import { useLogin } from "../hooks/mutations/useLogin";
 import toast from "react-hot-toast";
@@ -7,6 +7,7 @@ type UserSchema = User;
 
 type AuthContextType = {
   isAuthenticated: boolean;
+  authChecked: boolean;
   user: UserSchema | null;
   isLoading: boolean;
   isError: boolean;
@@ -19,6 +20,7 @@ const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const [authChecked, setAuthChecked] = React.useState<boolean>(false);
   const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
   const [user, setUser] = React.useState<UserSchema | null>(null);
   const [isError, setIsError] = React.useState<boolean>(false);
@@ -31,12 +33,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       {
         onSuccess: (data) => {
           setUser(data.user);
-          setIsAuthenticated(true);
           localStorage.setItem("token", data.token);
+          setIsAuthenticated(true);
         },
         onError: () => {
           setIsError(true);
           setIsAuthenticated(false);
+          setAuthChecked(false);
           setUser(null);
         },
       }
@@ -50,10 +53,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     toast.success("Logged out successfully");
   };
 
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      setIsAuthenticated(true);
+    }
+    setAuthChecked(true);
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{
         isAuthenticated,
+        authChecked,
         user,
         isLoading,
         isError,

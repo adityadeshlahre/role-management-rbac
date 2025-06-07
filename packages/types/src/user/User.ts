@@ -17,5 +17,17 @@ export const CreateUserSchema = UserSchema.partial({
   role: true,
 });
 
+export const LoginSchema = UserSchema.partial({
+  id: true,
+  name: true,
+  roleId: true,
+  createdAt: true,
+  role: true,
+}).pick({
+  email: true,
+  password: true,
+});
+
 export type User = z.infer<typeof UserSchema>;
 export type CreateUser = z.infer<typeof CreateUserSchema>;
+export type Login = z.infer<typeof LoginSchema>;

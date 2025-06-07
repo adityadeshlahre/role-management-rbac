@@ -1,16 +1,23 @@
-import { Button } from "@repo/ui/button";
 import React from "react";
+import { UserTable } from "../components/users/UserTable";
+import { useAuthContext } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Landing: React.FC = () => {
+  const { isAuthenticated } = useAuthContext();
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login");
+    }
+  }, [isAuthenticated, navigate]);
+
   return (
     <>
-      <div className="text-8xl">Quick + Start</div>
-      <Button
-        appName="APP BUTTON CLICKED"
-        className="text-6xl bg-lime-200 m-2 border-2 rounded-2xl border-lime-500 hover:bg-lime-300 hover:border-lime-600"
-      >
-        CLICK
-      </Button>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+        <UserTable />
+      </div>
     </>
   );
 };
