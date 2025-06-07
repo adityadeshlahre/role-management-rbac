@@ -1,0 +1,6 @@
+export const constatns = {
+  DELETE_USERS: "DELETE_USERS",
+  UPDATE_USERS: "UPDATE_USERS",
+  CREATE_USERS: "CREATE_USERS",
+  
+};

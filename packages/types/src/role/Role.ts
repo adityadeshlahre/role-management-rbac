@@ -16,4 +16,12 @@ export const RoleSchema = z.object({
     .optional(),
 });
 
+export const CreateRoleSchema = RoleSchema.partial({
+  id: true,
+  createdBy: true,
+  permission: true,
+});
+
 export type Role = z.infer<typeof RoleSchema>;
+
+export type CreateRole = z.infer<typeof CreateRoleSchema>;
