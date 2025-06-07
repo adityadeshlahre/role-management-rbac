@@ -47,9 +47,9 @@ packages{folder}
 ### Getting Started
 
 ```bash
-bun create next-app -e "https://github.com/adityadeshlahre/quick-start" <project-name>
+bun create next-app -e "https://github.com/adityadeshlahre/role-rbac" <project-name>
 
-npx create-next-app -e "https://github.com/adityadeshlahre/quick-start" <project-name>
+npx create-next-app -e "https://github.com/adityadeshlahre/role-rbac" <project-name>
 ```
 
 <p align="center" style="font-weight: bold;">OR</p>
@@ -63,9 +63,9 @@ bun i -g degit || pnpm i -g degit || yarn global add degit || npm i -g degit
 **Create a new project from this template**
 
 ```bash
-degit adityadeshlahre/quick-start <project-name>
+degit adityadeshlahre/role-rbac <project-name>
 # using GH cli
-gh repo create <project-name> --template <adityadeshlahre>/<quick-start> --public
+gh repo create <project-name> --template <adityadeshlahre>/<role-rbac> --public
 
 cd <project-name>
 ```

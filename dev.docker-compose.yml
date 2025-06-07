@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: ./apps/web/Dockerfile
-    container_name: quick-start-web
+    container_name: role-rbac-web
     expose:
       - 5173
     ports:
@@ -23,7 +23,7 @@ services:
     build:
       context: .
       dockerfile: ./apps/server/Dockerfile
-    container_name: quick-start-server
+    container_name: role-rbac-server
     expose:
       - 3000
     ports:

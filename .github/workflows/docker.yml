@@ -36,18 +36,18 @@ jobs:
 
       - name: Push web service image
         run: |
-          docker tag quick-start-web:latest ${{ secrets.DOCKERHUB_USERNAME }}/quick-start-web:latest
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/quick-start-web:latest
+          docker tag role-rbac-web:latest ${{ secrets.DOCKERHUB_USERNAME }}/role-rbac-web:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/role-rbac-web:latest
 
       - name: Push server service image
         run: |
-          docker tag quick-start-server:latest ${{ secrets.DOCKERHUB_USERNAME }}/quick-start-server:latest
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/quick-start-server:latest
+          docker tag role-rbac-server:latest ${{ secrets.DOCKERHUB_USERNAME }}/role-rbac-server:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/role-rbac-server:latest
 
       - name: Push full web-server image
         run: |
-          docker tag quick-start-full:latest ${{ secrets.DOCKERHUB_USERNAME }}/quick-start-full:latest
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/quick-start-full:latest
+          docker tag role-rbac-full:latest ${{ secrets.DOCKERHUB_USERNAME }}/role-rbac-full:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/role-rbac-full:latest
 
   render_deploy:
     name: Deploy to render
