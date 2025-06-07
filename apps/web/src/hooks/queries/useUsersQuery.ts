@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { getUserById, getUsers } from "../../services/userService";
-import { useDebounce } from "../useDebounce";
 
 export const useUsersQuery = () => {
   return useQuery({
