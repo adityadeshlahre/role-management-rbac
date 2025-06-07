@@ -1,5 +1,9 @@
 /* eslint-disable */
 import { prisma } from "./prisma";
+import {
+  hashedPassword,
+  issueToken,
+} from "./../../../apps/server/src/lib/utils";
 
 const DEFAULT_ROLES = [
   { name: "ADMIN", description: "Administrator role", isDefault: false },
@@ -8,10 +12,14 @@ const DEFAULT_ROLES = [
 ];
 
 const DEFAULT_PERMISSIONS = [
-  { name: "CREATE_ROLE", description: "Create new roles" },
-  { name: "READ_ROLE", description: "View roles" },
-  { name: "UPDATE_ROLE", description: "Edit roles" },
-  { name: "DELETE_ROLE", description: "Remove roles" },
+  { name: "CREATE_ROLES", description: "Create new roles" },
+  { name: "READ_ROLES", description: "View roles" },
+  { name: "UPDATE_ROLES", description: "Edit roles" },
+  { name: "DELETE_ROLES", description: "Remove roles" },
+  { name: "READ_USERS", description: "View users" },
+  { name: "CREATE_USERS", description: "Create new users" },
+  { name: "UPDATE_USERS", description: "Edit users" },
+  { name: "DELETE_USERS", description: "Remove users" },
 ];
 
 const DEFAULT_USERS = [
@@ -36,9 +44,18 @@ const DEFAULT_USERS = [
 ];
 
 const ROLE_PERMISSIONS_MAP: Record<string, string[]> = {
-  ADMIN: ["CREATE_ROLE", "READ_ROLE", "UPDATE_ROLE", "DELETE_ROLE"],
-  TEACHER: ["READ_ROLE"],
-  STUDENT: [],
+  ADMIN: [
+    "READ_USERS",
+    "CREATE_USERS",
+    "UPDATE_USERS",
+    "DELETE_USERS",
+    "CREATE_ROLES",
+    "READ_ROLES",
+    "UPDATE_ROLES",
+    "DELETE_ROLES",
+  ],
+  TEACHER: ["READ_USERS", "CREATE_USERS", "UPDATE_USERS", "READ_ROLES"],
+  STUDENT: ["READ_USERS"],
 };
 
 (async () => {
@@ -95,19 +112,28 @@ const ROLE_PERMISSIONS_MAP: Record<string, string[]> = {
       if (!role) {
         throw new Error(`Role "${user.roleName}" not found`);
       }
+      const hashed = await hashedPassword(user.password);
 
-      await prisma.user.upsert({
+      const upsertedUser = await prisma.user.upsert({
         where: { email: user.email },
         update: {
           name: user.name,
-          password: user.password,
+          password: hashed,
           roleId: role.id,
         },
         create: {
           name: user.name,
           email: user.email,
-          password: user.password,
+          password: hashed,
           roleId: role.id,
+        },
+      });
+
+      await prisma.session.create({
+        data: {
+          token: issueToken(upsertedUser.id, role.id.toString()),
+          userId: upsertedUser.id,
+          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days expiry
         },
       });
     }
