@@ -20,8 +20,20 @@ export const CreateRoleSchema = RoleSchema.partial({
   id: true,
   createdBy: true,
   permission: true,
+  isDefault: true,
+}).pick({
+  name: true,
+  description: true,
+});
+
+export const UpdateRoleSchema = z.object({
+  name: z.string().min(1),
+  description: z.string().nullable(),
+  permissions: z.array(z.string()).optional(),
 });
 
 export type Role = z.infer<typeof RoleSchema>;
 
 export type CreateRole = z.infer<typeof CreateRoleSchema>;
+
+export type UpdateRole = z.infer<typeof UpdateRoleSchema>;

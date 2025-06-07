@@ -7,13 +7,13 @@ import {
   getFilteredRowModel,
   FilterFn,
 } from "@tanstack/react-table";
-import { User } from "@repo/types";
-import { useUsersQuery } from "../../hooks/queries/useUsersQuery";
+import { Role } from "@repo/types";
 import { useDebounce } from "../../hooks/useDebounce";
 import { rankItem } from "@tanstack/match-sorter-utils";
+import { useRolesQuery } from "../../hooks/queries/useRolesQuery";
 
-export const UserTable: React.FC = () => {
-  const { data: users = [], isLoading, isError } = useUsersQuery();
+export const RolesTable: React.FC = () => {
+  const { data: users = [], isLoading, isError } = useRolesQuery();
   const [globalFilter, setGlobalFilter] = useState("");
   const debouncedFilter = useDebounce(globalFilter, 300);
 
@@ -21,30 +21,55 @@ export const UserTable: React.FC = () => {
     return rankItem(row.getValue(columnId), value).passed;
   };
 
-  const columns = React.useMemo<ColumnDef<User>[]>(
+  const columns = React.useMemo<ColumnDef<Role>[]>(
     () => [
       {
         header: "Name",
         accessorKey: "name",
       },
       {
-        header: "Email",
-        accessorKey: "email",
+        header: "Description",
+        accessorKey: "description",
       },
       {
-        header: "Role",
-        accessorKey: "role.name",
-        cell: ({ row }) => row.original.role?.name || "—",
+        header: "Roles",
+        accessorKey: "role",
+        cell: ({ row }) => {
+          const role = row.original.permission;
+          console.log(role);
+
+          return role ? (
+            <ul className="list-disc list-inside">
+              {role.map((permWrapper, index) => (
+                <li key={index} className="text-sm text-gray-700">
+                  {permWrapper.permission?.name}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            "—"
+          );
+        },
       },
-      // {
-      //   header: "Actions",
-      //   cell: ({ row }) => (
-      //     <div className="flex gap-2">
-      //       <button className="text-blue-600 hover:underline">Edit</button>
-      //       <button className="text-red-600 hover:underline">Delete</button>
-      //     </div>
-      //   ),
-      // },
+      {
+        header: "Actions",
+        cell: ({ row }) => (
+          <div className="flex gap-2">
+            <button
+              className="text-blue-600 hover:underline"
+              onClick={() => {
+                console.log(`Edit user: ${row.original.id}`);
+                window.location.href = `/roles/edit/${row.original.id}`;
+              }}
+            >
+              Edit
+            </button>
+            <button className="text-red-600 hover:underline" onClick={() => {}}>
+              Delete
+            </button>
+          </div>
+        ),
+      },
     ],
     []
   );
@@ -66,7 +91,7 @@ export const UserTable: React.FC = () => {
 
   return (
     <div className="rounded-xl border p-4 shadow-sm bg-white">
-      <h2 className="text-lg font-semibold mb-4">Users</h2>
+      <h2 className="text-lg font-semibold mb-4">Manage Roles Of User</h2>
       <input
         type="text"
         placeholder="Search users..."

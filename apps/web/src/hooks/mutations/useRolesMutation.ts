@@ -1,13 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { createRole, deleteRole, updateRole } from "../../services/roleService";
-import { CreateRole } from "@repo/types";
+import { CreateRole, UpdateRole } from "@repo/types";
 
-const queryClient = useQueryClient();
-
-export const useCreateRoleMutation = async (role: CreateRole) => {
+export const useCreateRoleMutation = () => {
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async () => await createRole(role),
+    mutationFn: async (role: CreateRole) => await createRole(role),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["roles"] });
       toast.success("Role created successfully");
@@ -20,9 +19,11 @@ export const useCreateRoleMutation = async (role: CreateRole) => {
   });
 };
 
-export const useUpdateRoleMutation = async (id: string, role: CreateRole) => {
+export const useUpdateRoleMutation = () => {
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async () => await updateRole(id, role),
+    mutationFn: async ({ id, role }: { id: string; role: UpdateRole }) =>
+      await updateRole(id, role),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["roles"] });
       toast.success("Role updated successfully");
@@ -35,11 +36,10 @@ export const useUpdateRoleMutation = async (id: string, role: CreateRole) => {
   });
 };
 
-export const useDeleteRoleMutation = async (id: string) => {
+export const useDeleteRoleMutation = () => {
   return useMutation({
-    mutationFn: async () => await deleteRole(id),
+    mutationFn: async (id: string) => await deleteRole(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["roles"] });
       toast.success("Role deleted successfully");
     },
     onError: (error) => {

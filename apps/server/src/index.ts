@@ -280,7 +280,7 @@ app.post(
   authorizeRoles(["ADMIN"]),
   authorizePermissions(["CREATE_ROLES"]),
   async (req: express.Request, res: express.Response): Promise<void> => {
-    const { name } = req.body;
+    const { name, description } = req.body;
 
     if (!name) {
       res.status(400).json({ error: "Role name is required" });
@@ -289,7 +289,7 @@ app.post(
 
     try {
       const newRole = await prisma.role.create({
-        data: { name },
+        data: { name, description },
       });
       res.status(201).json(newRole);
     } catch (error) {
@@ -301,51 +301,78 @@ app.post(
   }
 );
 
+app.get(
+  "/roles/:id",
+  authenticate,
+  authorizeRoles(["ADMIN"]),
+  authorizePermissions(["READ_ROLES"]),
+  async (req: express.Request, res: express.Response): Promise<void> => {
+    try {
+      const role = await prisma.role.findUnique({
+        where: { id: Number(req.params.id) },
+        include: {
+          permission: {
+            include: {
+              permission: true, // from RolePermission → Permission
+            },
+          },
+        },
+      });
+      if (!role) {
+        res.status(404).json({ error: "Role not found" });
+        return;
+      }
+      res.status(200).json(role);
+    } catch (error) {
+      console.error("Error fetching role:", error);
+      res
+        .status(500)
+        .json({ error: "An error occurred while fetching the role." });
+    }
+  }
+);
+
 app.put(
   "/roles/:id",
   authenticate,
   authorizeRoles(["ADMIN"]),
   authorizePermissions(["UPDATE_ROLES"]),
   async (req: express.Request, res: express.Response): Promise<void> => {
-    const { name, permissions } = req.body;
+    const { name, description, permissions } = req.body;
 
     if (!Array.isArray(permissions)) {
       res.status(400).json({ error: "Permissions are required" });
       return;
     }
 
+    const roleId = Number(req.params.id);
+    const sanitized = permissions.map((p: string) => p.trim().toUpperCase());
+
     try {
-      const roleId = Number(req.params.id);
-
-      const foundPermissions = await prisma.permission.findMany({
-        where: { name: { in: permissions } },
+      let existing = await prisma.permission.findMany({
+        where: { name: { in: sanitized } },
       });
+      const existingNames = existing.map((p) => p.name);
 
-      if (foundPermissions.length !== permissions.length) {
-        const foundNames = foundPermissions.map((p) => p.name);
-        const missing = permissions.filter((p) => !foundNames.includes(p));
-        res.status(400).json({
-          error: `These permissions were not found: ${missing.join(", ")}`,
+      const missing = sanitized.filter((p) => !existingNames.includes(p));
+      if (missing.length) {
+        await prisma.permission.createMany({
+          data: missing.map((name) => ({ name })),
+          skipDuplicates: true,
+        });
+        existing = await prisma.permission.findMany({
+          where: { name: { in: sanitized } },
         });
       }
 
-      await prisma.rolePermission.deleteMany({
-        where: { roleId },
-      });
-
+      await prisma.rolePermission.deleteMany({ where: { roleId } });
       await prisma.rolePermission.createMany({
-        data: foundPermissions.map((perm) => ({
-          roleId,
-          permissionId: perm.id,
-        })),
+        data: existing.map((perm) => ({ roleId, permissionId: perm.id })),
       });
-
-      const updateData: any = {};
-      if (name) updateData.name = name;
 
       const updatedRole = await prisma.role.update({
         where: { id: roleId },
-        data: updateData,
+        data: { ...(name && { name }), ...(description && { description }) },
         include: {
           permission: { include: { permission: true } },
         },
@@ -363,7 +390,7 @@ app.put(
 app.delete(
   "/roles/:id",
   authenticate,
-  authorizeRoles(["Admin"]),
+  authorizeRoles(["ADMIN"]),
   authorizePermissions(["DELETE_ROLES"]),
   async (req: express.Request, res: express.Response): Promise<void> => {
     try {
