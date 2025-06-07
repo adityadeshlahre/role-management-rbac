@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { prisma } from "@repo/db";
-import { verifyToken } from "src/lib/uitls";
+import { verifyToken } from "./../lib/utils";
 import { Permission, Role, User } from "@repo/types/index";
 
 declare global {
@@ -29,11 +29,14 @@ export const authenticate = async (
 
   const token = authHeader.split(" ")[1];
 
-  try {
-    const decoded = verifyToken(token || "") as { userId: number };
+  if (!token) {
+    return res.status(401).json({ error: "Unauthorized: No token provided" });
+  }
 
+  try {
+    const decoded = verifyToken(token || "") as { id: number; roleId: string };
     const user = await prisma.user.findUnique({
-      where: { id: decoded.userId },
+      where: { id: decoded.id },
       include: {
         role: {
           include: {
