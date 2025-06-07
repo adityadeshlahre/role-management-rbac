@@ -11,11 +11,13 @@ import { Role } from "@repo/types";
 import { useDebounce } from "../../hooks/useDebounce";
 import { rankItem } from "@tanstack/match-sorter-utils";
 import { useRolesQuery } from "../../hooks/queries/useRolesQuery";
+import { useNavigate } from "react-router-dom";
 
 export const RolesTable: React.FC = () => {
   const { data: users = [], isLoading, isError } = useRolesQuery();
   const [globalFilter, setGlobalFilter] = useState("");
   const debouncedFilter = useDebounce(globalFilter, 300);
+  const navigate = useNavigate();
 
   const fuzzyFilter: FilterFn<any> = (row, columnId, value) => {
     return rankItem(row.getValue(columnId), value).passed;
@@ -36,7 +38,6 @@ export const RolesTable: React.FC = () => {
         accessorKey: "role",
         cell: ({ row }) => {
           const role = row.original.permission;
-          console.log(role);
 
           return role ? (
             <ul className="list-disc list-inside">
@@ -58,13 +59,17 @@ export const RolesTable: React.FC = () => {
             <button
               className="text-blue-600 hover:underline"
               onClick={() => {
-                console.log(`Edit user: ${row.original.id}`);
-                window.location.href = `/roles/edit/${row.original.id}`;
+                navigate(`/roles/edit/${row.original.id}`);
               }}
             >
               Edit
             </button>
-            <button className="text-red-600 hover:underline" onClick={() => {}}>
+            <button
+              className="text-red-600 hover:underline"
+              onClick={() => {
+                navigate(`/roles/delete/${row.original.id}`);
+              }}
+            >
               Delete
             </button>
           </div>

@@ -11,11 +11,13 @@ import { User } from "@repo/types";
 import { useUsersQuery } from "../../hooks/queries/useUsersQuery";
 import { useDebounce } from "../../hooks/useDebounce";
 import { rankItem } from "@tanstack/match-sorter-utils";
+import { useNavigate } from "react-router-dom";
 
 export const UserTable: React.FC = () => {
   const { data: users = [], isLoading, isError } = useUsersQuery();
   const [globalFilter, setGlobalFilter] = useState("");
   const debouncedFilter = useDebounce(globalFilter, 300);
+  const navigate = useNavigate();
 
   const fuzzyFilter: FilterFn<any> = (row, columnId, value) => {
     return rankItem(row.getValue(columnId), value).passed;
@@ -36,15 +38,29 @@ export const UserTable: React.FC = () => {
         accessorKey: "role.name",
         cell: ({ row }) => row.original.role?.name || "—",
       },
-      // {
-      //   header: "Actions",
-      //   cell: ({ row }) => (
-      //     <div className="flex gap-2">
-      //       <button className="text-blue-600 hover:underline">Edit</button>
-      //       <button className="text-red-600 hover:underline">Delete</button>
-      //     </div>
-      //   ),
-      // },
+      {
+        header: "Actions",
+        cell: ({ row }) => (
+          <div className="flex gap-2">
+            <button
+              className="text-blue-600 hover:underline"
+              onClick={() => {
+                navigate(`/users/edit/${row.original.id}`);
+              }}
+            >
+              Edit
+            </button>
+            <button
+              className="text-red-600 hover:underline"
+              onClick={() => {
+                navigate(`/users/delete/${row.original.id}`);
+              }}
+            >
+              Delete
+            </button>
+          </div>
+        ),
+      },
     ],
     []
   );

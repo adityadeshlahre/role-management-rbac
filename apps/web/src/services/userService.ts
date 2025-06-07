@@ -1,5 +1,5 @@
 import api from "./axios";
-import { CreateUser } from "@repo/types/";
+import { CreateUser, UpdateUser } from "@repo/types/";
 
 export const getCurrentUser = async () => {
   const { data } = await api.get("/me");
@@ -21,7 +21,7 @@ export const createUser = async (user: CreateUser) => {
   return data;
 };
 
-export const updateUser = async (id: string, user: CreateUser) => {
+export const updateUser = async (id: string, user: UpdateUser) => {
   const { data } = await api.put(`/users/${id}`, user);
   return data;
 };

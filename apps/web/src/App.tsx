@@ -6,6 +6,9 @@ import RoleManagement from "./pages/RoleManagement";
 import { DeleteRoles } from "./components/roles/DeleteRoles";
 import { EditRoles } from "./components/roles/EditRoles";
 import { CreateRoles } from "./components/roles/CreateRoles";
+import { DeleteUser } from "./components/users/DeleteUser";
+import { EditUser } from "./components/users/EditUser";
+import { CreateUser } from "./components/users/CreateUser";
 
 function App() {
   return (
@@ -15,6 +18,30 @@ function App() {
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Form />} />
+            <Route
+              path="/users"
+              element={
+                <ProtectedRoute allowedRoles={["ADMIN", "TEACHER"]}>
+                  <CreateUser />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/users/edit/:userId"
+              element={
+                <ProtectedRoute allowedRoles={["ADMIN", "TEACHER"]}>
+                  <EditUser />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/users/delete/:userId"
+              element={
+                <ProtectedRoute allowedRoles={["ADMIN", "TEACHER"]}>
+                  <DeleteUser />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/roles"
               element={

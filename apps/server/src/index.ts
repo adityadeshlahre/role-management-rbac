@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import { CreateUserSchema, UserSchema } from "@repo/types";
+import { CreateUserSchema, UpdateUserSchema, UserSchema } from "@repo/types";
 import { prisma } from "@repo/db";
 import dotenv from "dotenv";
 import { authenticate } from "./middleware/auth";
@@ -147,7 +147,7 @@ app.get(
 app.post(
   "/users",
   authenticate,
-  authorizeRoles(["ADMIN"]),
+  authorizeRoles(["ADMIN", "TEACHER"]),
   authorizePermissions(["CREATE_USERS"]),
   async (req: express.Request, res: express.Response): Promise<void> => {
     const parsed = CreateUserSchema.safeParse(req.body);
@@ -184,22 +184,24 @@ app.post(
 app.put(
   "/users/:id",
   authenticate,
-  authorizeRoles(["ADMIN"]),
+  authorizeRoles(["ADMIN", "TEACHER"]),
   authorizePermissions(["UPDATE_USERS"]),
   async (req: express.Request, res: express.Response) => {
-    const parsed = UserSchema.safeParse(req.body);
+    const parsed = UpdateUserSchema.safeParse(req.body);
 
     if (!parsed.success) {
       res.status(400).json({ error: parsed.error.errors });
       return;
     }
 
-    const { name, email, password } = parsed.data;
+    const { name, email, password, roleId } = parsed.data;
+
+    const hashedPass = await hashedPassword(password);
 
     try {
       const user = await prisma.user.update({
         where: { id: Number(req.params.id) },
-        data: { name, email, password },
+        data: { name, email, password: hashedPass, roleId },
         include: { role: true },
       });
       res.json(user);

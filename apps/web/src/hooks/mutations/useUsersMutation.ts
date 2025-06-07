@@ -1,13 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createUser, deleteUser, updateUser } from "../../services/userService";
-import { CreateUser } from "@repo/types";
+import { CreateUser, UpdateUser } from "@repo/types";
 import toast from "react-hot-toast";
 
-const queryClient = useQueryClient();
-
-export const useCreateUserMutation = async (user: CreateUser) => {
+export const useCreateUserMutation = () => {
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async () => await createUser(user),
+    mutationFn: async (user: CreateUser) => await createUser(user),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
     },
@@ -19,9 +18,11 @@ export const useCreateUserMutation = async (user: CreateUser) => {
   });
 };
 
-export const useUpdateUserMutation = async (id: string, user: CreateUser) => {
+export const useUpdateUserMutation = () => {
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async () => await updateUser(id, user),
+    mutationFn: async ({ id, user }: { id: string; user: UpdateUser }) =>
+      await updateUser(id, user),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       toast.success("User updated successfully");
@@ -34,11 +35,10 @@ export const useUpdateUserMutation = async (id: string, user: CreateUser) => {
   });
 };
 
-export const useDeleteUserMutation = async (id: string) => {
+export const useDeleteUserMutation = () => {
   return useMutation({
-    mutationFn: async () => await deleteUser(id),
+    mutationFn: async (id: string) => await deleteUser(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
       toast.success("User deleted successfully");
     },
     onError: (error) => {

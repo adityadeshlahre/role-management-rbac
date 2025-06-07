@@ -15,9 +15,9 @@ export const CreateRoles = () => {
   }
 
   return (
-    <div>
-      <div className="text-2xl font-bold mb-4">Create Roles Page</div>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
       <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
+        <div className="text-2xl font-bold mb-4">Create Roles Page</div>
         <form>
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-2">
