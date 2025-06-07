@@ -83,9 +83,30 @@ app.post(
 );
 
 app.get(
+  "/me",
+  authenticate,
+  (req: express.Request, res: express.Response): void => {
+    const user = req.user;
+
+    if (!user) {
+      res.status(401).json({ error: "Unauthorized" });
+      return;
+    }
+
+    res.status(200).json({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role?.name,
+      permissions: user.role?.permission.map((rp) => rp.permission.name),
+    });
+  }
+);
+
+app.get(
   "/users",
   authenticate,
-  authorizeRoles(["ADMIN", "TEACHER"]),
+  authorizeRoles(["ADMIN", "TEACHER", "STUDENT"]),
   authorizePermissions(["READ_USERS"]),
   async (req: express.Request, res: express.Response): Promise<void> => {
     try {

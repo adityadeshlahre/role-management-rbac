@@ -1,6 +1,11 @@
 import api from "./axios";
 import { CreateUser } from "@repo/types/";
 
+export const getCurrentUser = async () => {
+  const { data } = await api.get("/me");
+  return data;
+};
+
 export const getUsers = async () => {
   const { data } = await api.get(`/users`);
   return data;

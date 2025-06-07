@@ -1,10 +1,8 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { useAuthContext } from "./AuthContext";
-import { Role } from "@repo/types";
+import React, { createContext, useContext } from "react";
+import { useCurrentUserQuery } from "../hooks/queries/useUsersQuery";
 
 type RoleContextType = {
-  role: Role | null;
-  isAdmin: boolean;
+  role: string | undefined;
 };
 
 const RoleContext = createContext<RoleContextType | undefined>(undefined);
@@ -12,19 +10,10 @@ const RoleContext = createContext<RoleContextType | undefined>(undefined);
 export const RoleProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { user } = useAuthContext();
-  const [role, setRole] = useState<Role | null>(null);
-
-  useEffect(() => {
-    if (user?.role) {
-      setRole(user.role);
-    }
-  }, [user]);
-
-  const isAdmin = role?.name === "ADMIN";
+  const { data } = useCurrentUserQuery();
 
   return (
-    <RoleContext.Provider value={{ role, isAdmin }}>
+    <RoleContext.Provider value={{ role: data?.role }}>
       {children}
     </RoleContext.Provider>
   );
