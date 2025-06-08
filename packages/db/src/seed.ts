@@ -3,8 +3,8 @@ import { prisma } from "./prisma";
 import { hashedPassword, issueToken } from "@repo/common/src/";
 
 const DEFAULT_ROLES = [
-  { name: "ADMIN", description: "Administrator role", isDefault: false },
-  { name: "TEACHER", description: "Teacher role", isDefault: false },
+  { name: "ADMIN", description: "Administrator role", isDefault: true },
+  { name: "TEACHER", description: "Teacher role", isDefault: true },
   { name: "STUDENT", description: "Student role", isDefault: true },
 ];
 

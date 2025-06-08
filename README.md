@@ -1,3 +1,66 @@
+### Role Base Authentication & Authorization App
+
+#### Routes
+
+```
+"/" loades all the users
+```
+
+```
+"/login" this open login form if the users is not authenticated { onLogin it sets token }
+```
+
+```
+"/users" Creating New User with role selection { admin & teacher only can access}
+```
+
+```
+"/users/edit/:userID" Edit user info + roles { admin & teacher only can access }
+```
+
+```
+"/user/delete/:userID" Delete user { admin & teacher only can access }
+```
+
+```
+"/roles" display all the roles availalable with permisisons to perform {admin only}
+```
+
+```
+"/roles/create" create new roles wiht name and discription { admin only }
+```
+
+```
+"/roles/edit/:roleId" edit roles info and it action / access of operation to perform { admin only }
+```
+
+```
+"/roles/delete/:roleId" delete roles { admin only }
+```
+
+#### Application Using
+
+- tanstack query
+- tanstack table
+- debounced search { with fuzzy filter }
+- axiosInstance { token based call }
+- Docker Image for deployment
+- Render as Hosting
+- turbo repo monorepo
+- PRISMA ORM { as SQL Service Layer }
+- ExpressJS { backend }
+
+#### Todos
+
+- [ ] More Extensive Permisson Management Page
+- [ ] Delete Confirmation can be improved
+- [ ] UI can be improved { in overall app }
+- [ ] TEST cases for API's atlease can be written
+- [ ] Code Can Structure More well
+
+<details>
+<summary>Starter Kit Info</summary>
+
 ## quick ts starter
 
 This is my personal prefered stack for for starting simple full stack projects in one go. Initalized with turborepo in furhter i have added all the stacks along the way.
@@ -201,4 +264,5 @@ Learn more about the power of Turborepo:
 - [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
 ````
 
+</details>
 </details>
